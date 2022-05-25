@@ -15,7 +15,7 @@ class CepController extends Controller
      * 
      * @return Illuminate\Http\Response
      */
-    public function retrieveCepData(Request $request, Response $response)
+    public function search(Request $request, Response $response)
     {
         $response->header("Content-Type", "application/json;charset=utf-8");
 
@@ -42,8 +42,13 @@ class CepController extends Controller
 
         } else {
             // Retrieve ViaCep data as Object and add a 'label' property
-            $zipCodeResult = ZipCode::find($request->ceps)->getObject();
-            $zipCodeResult->label = ($zipCodeResult->logradouro) . ", " . ($zipCodeResult->localidade);
+    
+            $zipCodeInfo = ZipCode::find($request->ceps)->getObject();
+            $zipCodeInfo->label = ($zipCodeInfo->logradouro) . ", " . ($zipCodeInfo->localidade);
+            
+            // Format result as array
+            $zipCodeResult[] = $zipCodeInfo;
+            
 
             // Return the response as JSON format
             return response()->json(
